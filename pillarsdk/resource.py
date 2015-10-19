@@ -139,6 +139,25 @@ class Find(Resource):
         else:
             return None
 
+    @classmethod
+    def find_one(cls, params, api=None):
+        """Get one resource starting from parameters different than the resource
+        id. TODO if more than one match for the query is found, raise exception.
+        """
+        api = api or Api.Default()
+
+        # Force delivery of only 1 result
+        params['max_results'] = 1
+        url = utils.join_url_params(cls.path, params)
+
+        response = api.get(url)
+        # Keep the response a dictionary, and cast it later into an object.
+        if response['_items']:
+            return cls(response['_items'][0])
+        else:
+            raise ResourceNotFound(response)
+
+
 class List(Resource):
 
     list_class = Resource
@@ -203,7 +222,7 @@ class Update(Resource):
         attributes.pop('_etag')
         attributes.pop('_created')
         attributes.pop('_updated')
-        attributes.pop('_links')
+        attributes.pop('_links', None)
         url = utils.join_url(self.path, str(self['_id']))
         headers = utils.merge_dict(
             self.http_headers(),
@@ -232,7 +251,7 @@ class Replace(Resource):
         attributes.pop('_etag')
         attributes.pop('_created')
         attributes.pop('_updated')
-        attributes.pop('_links')
+        attributes.pop('_links', None)
         if 'parent' in attributes:
             attributes.pop('parent')
         url = utils.join_url(self.path, str(self['_id']))
