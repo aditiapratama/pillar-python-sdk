@@ -80,3 +80,8 @@ class NodeType(List, Find, Create, Post, Delete):
     """NodeType class wrapping the REST node_types endpoint
     """
     path = "node_types"
+
+    def has_method(self, method):
+        if method in self.allowed_methods:
+            return True
+        return False
