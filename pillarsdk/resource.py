@@ -1,4 +1,5 @@
 import uuid
+from datetime import datetime
 
 from . import utils
 from .api import Api
@@ -112,7 +113,8 @@ class Find(Resource):
         api = api or Api.Default()
 
         url = utils.join_url(cls.path, str(resource_id))
-        return cls(api.get(url))
+        item = utils.convert_datetime(api.get(url))
+        return cls(item)
 
     @classmethod
     def find_first(cls, params, api=None):
@@ -135,7 +137,7 @@ class Find(Resource):
         response = api.get(url)
         res = cls(response)
         if res._items:
-            return res._items[0]
+            return utils.convert_datetime(res._items[0])
         else:
             return None
 
@@ -153,7 +155,7 @@ class Find(Resource):
         response = api.get(url)
         # Keep the response a dictionary, and cast it later into an object.
         if response['_items']:
-            return cls(response['_items'][0])
+            return cls(utils.convert_datetime(response['_items'][0]))
         else:
             raise ResourceNotFound(response)
 
@@ -183,6 +185,8 @@ class List(Resource):
 
         try:
             response = api.get(url)
+            for item in response['_items']:
+                item = utils.convert_datetime(item)
             return cls.list_class(response)
         except AttributeError:
             # To handle the case when response is JSON Array

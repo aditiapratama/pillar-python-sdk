@@ -30,7 +30,9 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
         url = utils.join_url(cls.path, str(resource_id))
         if params:
             url = utils.join_url_params(url, params)
-        return cls(api.get(url))
+
+        item = utils.convert_datetime(api.get(url))
+        return cls(item)
 
     @classmethod
     def find_one(cls, params, api=None):
@@ -46,7 +48,8 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
         response = api.get(url)
         # Keep the response a dictionary, and cast it later into an object.
         if response['_items']:
-            return cls(response['_items'][0])
+            item = utils.convert_datetime(response['_items'][0])
+            return cls(item)
         else:
             raise ResourceNotFound(response)
 

@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 
 try:
     from urllib.parse import urlencode
@@ -44,3 +45,15 @@ def merge_dict(data, *override):
     for current_dict in (data,) + override:
         result.update(current_dict)
     return result
+
+
+def convert_datetime(item):
+    """Starting from an JSON object, find and replace the _create and _updated
+    keys with actual datetime objects.
+    """
+    keys = ['_updated', '_created']
+
+    for k in keys:
+        item[k] = datetime.strptime(item[k], "%a, %d %b %Y %H:%M:%S %Z")
+
+    return item
