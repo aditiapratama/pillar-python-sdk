@@ -62,7 +62,7 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
         attributes.pop('_etag')
         attributes.pop('_created')
         attributes.pop('_updated')
-        attributes.pop('_links')
+        attributes.pop('_links', None)
         attributes.pop('allowed_methods')
         url = utils.join_url(self.path, str(self['_id']))
         headers = utils.merge_dict(
