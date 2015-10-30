@@ -122,13 +122,14 @@ class Api(object):
         """
         response = requests.request(method, url, **kwargs)
 
-        # logging.info("Response[{0}]: {1}".format(response.status_code, reisponse.reason))
 
         try:
             error = self.handle_response(response,
                                          response.content.decode('utf-8'))
         except:
-            print (response.content)
+            logging.info("Response[{0}]: {1}".format(response.status_code,
+                response.reason))
+            #print (response.content)
             raise
 
         return error
