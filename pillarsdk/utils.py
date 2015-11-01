@@ -48,7 +48,7 @@ def merge_dict(data, *override):
 
 
 def convert_datetime(item):
-    """Starting from an JSON object, find and replace the _create and _updated
+    """Starting from a JSON object, find and replace the _create and _updated
     keys with actual datetime objects.
     """
     keys = ['_updated', '_created']
