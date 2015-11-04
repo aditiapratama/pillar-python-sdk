@@ -3,6 +3,7 @@ from datetime import datetime
 
 from . import utils
 from .api import Api
+from .exceptions import ResourceNotFound
 
 
 class Resource(object):
@@ -159,7 +160,7 @@ class Find(Resource):
 
         response = api.get(url)
         # Keep the response a dictionary, and cast it later into an object.
-        if response['_items']:
+        if '_items' in response:
             return cls(utils.convert_datetime(response['_items'][0]))
         else:
             raise ResourceNotFound(response)
