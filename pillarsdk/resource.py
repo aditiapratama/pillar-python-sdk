@@ -98,6 +98,11 @@ class Resource(object):
             data[key] = parse_object(self.__data__[key])
         return data
 
+    def from_dict(self, d):
+        for key, val in d.iteritems():
+            self[key] = val
+        return self
+
 
 class Find(Resource):
 
