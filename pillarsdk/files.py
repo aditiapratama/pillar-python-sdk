@@ -52,13 +52,17 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
             return None
         return files
 
-    def thumbnail(self, size):
+    def thumbnail(self, size, api=None):
         """Utility to replace a component of an image link so that it points to
         a thumbnail, without querying the database.
         """
         if size in ['s', 'b', 't', 'm', 'l', 'h']:
-            root, ext = splitext(self.link)
-            return "{0}-{1}.jpg".format(root, size)
+            if self.backend == 'gcs':
+                thumbnail = self.thumbnail_file(size, api=api)
+                return thumbnail.link
+            else:
+                root, ext = splitext(self.link)
+                return "{0}-{1}.jpg".format(root, size)
         else:
             raise ValueError("Size should be (s, b, t, m, l, h)")
 
