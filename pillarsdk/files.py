@@ -39,18 +39,18 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
         api.get(url)
         return self.success()
 
-    def children(self, api=None):
-        """Collect children (variations) of the current file. Used to connect
-        different resolutions of the same picture, or multiple versions of the
-        same video in different formats/containers.
+    # def children(self, api=None):
+    #     """Collect children (variations) of the current file. Used to connect
+    #     different resolutions of the same picture, or multiple versions of the
+    #     same video in different formats/containers.
 
-        TODO: add params to support pagination.
-        """
-        api = api or self.api
-        files = self.all({'where': '{"parent": "%s"}' % self._id}, api=api)
-        if not files._items:
-            return None
-        return files
+    #     TODO: add params to support pagination.
+    #     """
+    #     api = api or self.api
+    #     files = self.all({'where': '{"parent": "%s"}' % self._id}, api=api)
+    #     if not files._items:
+    #         return None
+    #     return files
 
     def thumbnail(self, size, api=None):
         """Utility to replace a component of an image link so that it points to
@@ -58,8 +58,8 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
         """
         if size in ['s', 'b', 't', 'm', 'l', 'h']:
             if self.backend == 'gcs':
-                thumbnail = self.thumbnail_file(size, api=api)
-                return thumbnail.link
+                thumbnail_link = self.thumbnail_file(size, api=api)
+                return thumbnail_link
             else:
                 root, ext = splitext(self.link)
                 return "{0}-{1}.jpg".format(root, size)
@@ -75,11 +75,17 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
         if size in ['s', 'b', 't', 'm', 'l', 'h']:
             # We chack from the content_type if the file is an image
             if self.content_type.split('/')[0] == 'image':
-                thumbnail = self.find_first({
-                    'where': '{"parent" : "%s", "size" : "%s"}'\
-                        % (self._id, size),
-                    }, api=api)
-                return thumbnail
+                if self.variations:
+                    thumbnail = next((item for item in self['variations'] if
+                        item['size'] == size), None)
+                    if thumbnail:
+                        return thumbnail['link']
+                else:
+                    thumbnail = self.find_first({
+                        'where': '{"parent" : "%s", "size" : "%s"}'\
+                            % (self._id, size),
+                        }, api=api)
+                    return thumbnail.link
             else:
                 return None
         else:
