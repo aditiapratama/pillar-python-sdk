@@ -8,13 +8,14 @@ from .resource import Replace
 from .exceptions import ResourceNotFound
 
 from . import utils
+from .nodes import Node
 from .api import Api
 
 
-class Node(List, Find, Create, Post, Update, Delete, Replace):
-    """Node class wrapping the REST nodes endpoint
+class Project(List, Find, Create, Post, Update, Delete, Replace):
+    """Project class wrapping the REST nodes endpoint
     """
-    path = "nodes"
+    path = "projects"
 
     @classmethod
     def find(cls, resource_id, params=None, api=None):
@@ -22,7 +23,7 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
 
         Usage::
 
-            >>> Node.find("507f1f77bcf86cd799439011")
+            >>> Project.find("507f1f77bcf86cd799439011")
         """
 
         api = api or Api.Default()
@@ -63,9 +64,10 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
         attributes.pop('_updated')
         attributes.pop('_links', None)
         attributes.pop('allowed_methods')
-        for attr in ['parent', 'picture']:
-            if attr in attributes and attributes[attr] is None:
-                attributes.pop(attr, None)
+        # Remove fields with None value (causes error on validation)
+        for prop in ['picture_square', 'picture_header']:
+            if prop in attributes and attributes[prop] is None:
+                attributes.pop(prop)
         url = utils.join_url(self.path, str(self['_id']))
         headers = utils.merge_dict(
             self.http_headers(),
@@ -80,13 +82,15 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
             return True
         return False
 
+    def children(self, api=None):
+        api = api or self.api
+        children = Node.all({
+            'where': '{"project" : "%s", "parent" : {"$exists": false}}'\
+                % self._id,
+            }, api=api)
+        return children
 
-class NodeType(List, Find, Create, Post, Delete):
-    """NodeType class wrapping the REST node_types endpoint
-    """
-    path = "node_types"
+    def get_node_type(self, node_type_name):
+        return next((item for item in self.node_types if item.name \
+            and item['name'] == node_type_name), None)
 
-    def has_method(self, method):
-        if method in self.allowed_methods:
-            return True
-        return False
