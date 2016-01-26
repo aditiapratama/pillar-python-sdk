@@ -94,3 +94,21 @@ class Project(List, Find, Create, Post, Update, Delete, Replace):
         return next((item for item in self.node_types if item.name \
             and item['name'] == node_type_name), None)
 
+    def node_type_has_method(self, node_type_name, method, api):
+        """Utility method that checks if a given node_type has the requested
+        method.
+        """
+        api = api or Api.Default()
+        url = utils.join_url(self.path, str(self._id))
+        params = {'projection': '{"permissions":1, "name": 1, "node_types": 1, \
+                "url": 1, "user": 1}',
+            'node_type': node_type_name}
+        url = utils.join_url_params(url, params)
+        response = api.get(url)
+        node_type = next((item for item in response['node_types'] if item['name'] \
+            and item['name'] == node_type_name), None)
+        if method in node_type['allowed_methods']:
+            return True
+        return False
+
+
