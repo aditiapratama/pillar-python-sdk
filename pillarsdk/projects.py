@@ -94,7 +94,8 @@ class Project(List, Find, Create, Post, Update, Delete, Replace):
         return next((item for item in self.node_types if item.name \
             and item['name'] == node_type_name), None)
 
-    def node_type_has_method(self, node_type_name, method, api):
+
+    def node_type_has_method(self, node_type_name, method, api=None):
         """Utility method that checks if a given node_type has the requested
         method.
         """
