@@ -60,14 +60,17 @@ class Project(List, Find, Create, Post, Update, Delete, Replace):
         etag = attributes['_etag']
         attributes.pop('_id')
         attributes.pop('_etag')
-        attributes.pop('_created')
-        attributes.pop('_updated')
+        attributes.pop('_created', None)
+        attributes.pop('_updated', None)
         attributes.pop('_links', None)
         attributes.pop('allowed_methods')
         # Remove fields with None value (causes error on validation)
         for prop in ['picture_square', 'picture_header']:
             if prop in attributes and attributes[prop] is None:
                 attributes.pop(prop)
+            # Strip embedded image file properties and rever to ObjectId
+            elif type(attributes[prop]) is dict:
+                attributes[prop] = attributes[prop]['_id']
         url = utils.join_url(self.path, str(self['_id']))
         headers = utils.merge_dict(
             self.http_headers(),
