@@ -68,7 +68,7 @@ class Project(List, Find, Create, Post, Update, Delete, Replace):
         for prop in ['picture_square', 'picture_header']:
             if prop in attributes and attributes[prop] is None:
                 attributes.pop(prop)
-            # Strip embedded image file properties and rever to ObjectId
+            # Strip embedded image file properties and revert to ObjectId
             elif type(attributes[prop]) is dict:
                 attributes[prop] = attributes[prop]['_id']
         url = utils.join_url(self.path, str(self['_id']))
