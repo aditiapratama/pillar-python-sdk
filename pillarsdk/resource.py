@@ -211,10 +211,11 @@ class Create(Resource):
             >>> node = Node({})
             >>> node.create()
         """
+
         api = api or self.api
         headers = self.http_headers()
-
-        new_attributes = api.post(self.path, self.to_dict(), headers)
+        attributes = utils.remove_none_attributes(self.to_dict())
+        new_attributes = api.post(self.path, attributes, headers)
         self.error = None
         self.merge(new_attributes)
         return self.success()

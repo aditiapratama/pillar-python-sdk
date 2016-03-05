@@ -57,3 +57,23 @@ def convert_datetime(item):
         item[k] = datetime.strptime(item[k], "%a, %d %b %Y %H:%M:%S %Z")
 
     return item
+
+
+def remove_none_attributes(attributes):
+    """Return a new dict with all None values removed"""
+    # out = {}
+    # for k, v in attributes.iteritems():
+    #     if v is not None:
+    #         if type(v) is dict:
+    #             attributes[k] = remove_none_attributes(v)
+    #         else:
+    #             out[k] = v
+    # return out
+
+    if isinstance(attributes, (list, tuple, set)):
+        return type(attributes)(remove_none_attributes(x) for x in attributes if x is not None)
+    elif isinstance(attributes, dict):
+        return type(attributes)((remove_none_attributes(k), remove_none_attributes(v))
+            for k, v in attributes.items() if k is not None and v is not None)
+    else:
+        return attributes
