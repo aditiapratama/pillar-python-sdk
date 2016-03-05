@@ -7,6 +7,7 @@ from .tokens import Token
 from .groups import Group
 from .organizations import Organization
 from .projects import Project
+from .activities import Activity, Notification
 from .binary_files import binaryFile
 from .exceptions import ResourceNotFound, UnauthorizedAccess, MissingConfig
 from .config import __version__, __pypi_packagename__
