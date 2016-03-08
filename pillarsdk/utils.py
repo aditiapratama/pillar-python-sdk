@@ -1,4 +1,6 @@
+import json
 import re
+import six
 from datetime import datetime
 
 try:
@@ -13,8 +15,8 @@ def join_url(url, *paths):
 
     Usage::
 
-        >>> utils.join_url("pillar:5000", "shots")
-        pillar:5000/shots
+        >>> join_url("pillar:5000", "shots")
+        'pillar:5000/shots'
     """
     for path in paths:
         url = re.sub(r'/?$', re.sub(r'^/?', '/', path), url)
@@ -26,10 +28,25 @@ def join_url_params(url, params):
 
     Usage::
 
-        >>> utils.join_url_params("pillar:5000/shots", {"page-id": 2, "NodeType": "Shot Group"})
-        pillar:5000/shots?page-id=2&NodeType=Shot+Group
+        >>> join_url_params("pillar:5000/shots", {"page-id": 2, "NodeType": "Shot Group"})
+        'pillar:5000/shots?page-id=2&NodeType=Shot+Group'
     """
-    return url + "?" + urlencode(params)
+
+    if params is None:
+        return url
+
+    def convert_to_string(param):
+        if isinstance(param, dict):
+            return json.dumps(param)
+        if isinstance(param, six.text_type):
+            return param.encode('utf-8')
+        return param
+
+    jsonified_params = {
+        key: convert_to_string(param)
+        for key, param in params.items()
+    }
+    return url + "?" + urlencode(jsonified_params)
 
 
 def merge_dict(data, *override):
@@ -38,8 +55,9 @@ def merge_dict(data, *override):
 
     Usage::
 
-        >>> utils.merge_dict({"foo": "bar"}, {1: 2}, {"foo1": "bar2"})
-        {1: 2, 'foo': 'bar', 'foo1': 'bar2'}
+        >>> md = merge_dict({"foo": "bar"}, {1: 2}, {"foo1": "bar2"})
+        >>> md == {1: 2, 'foo': 'bar', 'foo1': 'bar2'}
+        True
     """
     result = {}
     for current_dict in (data,) + override:
