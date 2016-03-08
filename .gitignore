@@ -1,5 +1,10 @@
 *.pyc
+.*.swp
 *.sublime-project
 *.sublime-workspace
 dist/
 MANIFEST
+/.coverage
+/.cache/
+/.tox/
+/pillar_sdk.egg-info/
