@@ -1,5 +1,1 @@
 __version__ = "0.0.1"
-__pypi_username__ = "armadillica"
-__pypi_packagename__ = "pillar-sdk"
-__github_username__ = "armadillica"
-__github_reponame__ = "Pillar-Python-SDK"

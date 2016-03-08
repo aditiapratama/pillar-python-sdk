@@ -1,40 +1,32 @@
 # -*- coding: utf-8 -*-
 from setuptools import setup
 
-import sys, os
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'pillarsdk'))
-from config import __version__, __pypi_packagename__, __github_username__, __github_reponame__
-
 long_description = """
 The Pillar REST SDK provides Python APIs to communicate to the Pillar webservices.
 """
 
-# license='Free BSD'
-# if os.path.exists('LICENSE.md'):
-#   license = open('LICENSE.md').read()
-
-url = 'https://github.com/' + __github_username__ + '/' + __github_reponame__
-
 setup(
-    name=__pypi_packagename__,
-    version=__version__,
+    name='pillar-sdk',
+    version='0.0.1',
     author='Francesco Siddi, PayPal',
     author_email='francesco@blender.org',
     packages=['pillarsdk'],
     scripts=[],
-    url=url,
+    url='https://github.com/armadillica/Pillar-Python-SDK',
     license='BSD License',
     description='The Pillar REST SDK provides Python APIs to communicate to the Pillar webservices.',
     long_description=long_description,
     install_requires=['requests>=1.0.0', 'six>=1.0.0', 'pyopenssl>=0.14'],
+    test_requires=['tox', 'coverage', 'pytest', 'pytest-xdist', 'pytest-cov'],
     classifiers=[
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
     keywords=['pillar', 'rest', 'sdk', 'tracking', 'film', 'production']
