@@ -16,7 +16,7 @@ setup(
     license='BSD License',
     description='The Pillar REST SDK provides Python APIs to communicate to the Pillar webservices.',
     long_description=long_description,
-    install_requires=['requests>=1.0.0', 'six>=1.0.0', 'pyopenssl>=0.14'],
+    install_requires=['requests>=1.0.0', 'pyopenssl>=0.14'],
     test_requires=['tox', 'coverage', 'pytest', 'pytest-xdist', 'pytest-cov'],
     classifiers=[
         'Intended Audience :: Developers',

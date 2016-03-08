@@ -1,12 +1,19 @@
 import json
 import re
-import six
+import sys
 from datetime import datetime
 
 try:
     from urllib.parse import urlencode
 except ImportError:
     from urllib import urlencode
+
+# from six:
+PY3 = sys.version_info[0] == 3
+if PY3:
+    text_type = str
+else:
+    text_type = unicode
 
 
 def join_url(url, *paths):
@@ -38,7 +45,7 @@ def join_url_params(url, params):
     def convert_to_string(param):
         if isinstance(param, dict):
             return json.dumps(param)
-        if isinstance(param, six.text_type):
+        if isinstance(param, text_type):
             return param.encode('utf-8')
         return param
 
