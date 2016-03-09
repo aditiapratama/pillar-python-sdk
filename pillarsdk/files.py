@@ -1,4 +1,5 @@
-from os.path import splitext
+import os.path
+
 from .resource import List
 from .resource import Find
 from .resource import Create
@@ -8,6 +9,9 @@ from .resource import Delete
 from .resource import Replace
 
 from . import utils
+
+THUMBNAIL_SIZES = 'sbtmlh'
+
 
 class File(List, Find, Create, Post, Update, Delete, Replace):
     """Node class wrapping the REST nodes endpoint
@@ -73,38 +77,45 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
         """Utility to replace a component of an image link so that it points to
         a thumbnail, without querying the database.
         """
-        if size in ['s', 'b', 't', 'm', 'l', 'h']:
-            if self.backend == 'gcs':
-                thumbnail_link = self.thumbnail_file(size, api=api)
-                return thumbnail_link
-            else:
-                root, ext = splitext(self.link)
-                return "{0}-{1}.jpg".format(root, size)
+
+        if size not in THUMBNAIL_SIZES:
+            raise ValueError("Size should be in ({}), not {}"
+                             .format(', '.join(THUMBNAIL_SIZES), size))
+
+        if self.backend == 'gcs':
+            thumbnail_link = self.thumbnail_file(size, api=api)
+            return thumbnail_link
         else:
-            raise ValueError("Size should be (s, b, t, m, l, h)")
+            root, ext = os.path.splitext(self.link)
+            return "{0}-{1}.jpg".format(root, size)
 
     def thumbnail_file(self, size, api=None):
         """Delivers a single thumbnail (child) file for an image. Before returning
         we check that the parent is actually an image.
         :param path: the size (s, b, t, m, l, h)
+
+        @returns: a link to the thumbnail, or None if there is no thumbnail
+        @rtype: str
         """
         api = api or self.api
-        if size in ['s', 'b', 't', 'm', 'l', 'h']:
-            # We chack from the content_type if the file is an image
-            if self.content_type.split('/')[0] == 'image':
-                if self.variations:
-                    thumbnail = next((item for item in self['variations'] if
-                        item['size'] == size), None)
-                    if thumbnail:
-                        return thumbnail['link']
-                else:
-                    thumbnail = self.find_first({
-                        'where': '{"parent" : "%s", "size" : "%s"}'\
-                            % (self._id, size),
-                        }, api=api)
-                    return thumbnail.link
-            else:
-                return None
+
+        if size not in THUMBNAIL_SIZES:
+            raise ValueError("Size should be in ({}), not {}"
+                             .format(', '.join(THUMBNAIL_SIZES), size))
+
+        # We check from the content_type if the file is an image
+        if self.content_type.split('/')[0] != 'image':
+            # File is not an image, so no thumbnail available
+            return None
+
+        if self.variations:
+            thumbnail = next((item for item in self['variations']
+                              if item['size'] == size), None)
+            if thumbnail:
+                return thumbnail['link']
         else:
-            raise ValueError("Size should be (s, b, t, m, l, h)")
+            thumbnail = self.find_first(
+                {'where': {"parent": self._id, "size": size}},
+                api=api)
+            return thumbnail.link
 
