@@ -25,6 +25,7 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
 
         # Force delivery of only 1 result
         params['max_results'] = 1
+        cls._ensure_projections(params, cls.ensure_query_projections)
         url = utils.join_url_params(cls.path, params)
 
         response = api.get(url)

@@ -106,6 +106,29 @@ class Resource(object):
 
 
 class Find(Resource):
+    ensure_query_projections = {}
+
+    @classmethod
+    def _ensure_projections(cls, params, extra_projections):
+        """Ensures that if projections are given in the params, they contain the given ones.
+
+        Only works when `params['projection']` exists and is a dict.
+
+        @param params: URL parameters
+        @type params: dict
+        @param extra_projections: extra projections to add
+        @type extra_projections: dict
+        """
+
+        if not extra_projections:
+            return
+
+        try:
+            if isinstance(params['projection'], dict):
+                params['projection'].update(extra_projections)
+        except (TypeError, KeyError):
+            # Either params is None or params['projection'] doesn't exist.
+            pass
 
     @classmethod
     def find(cls, resource_id, params=None, api=None):
@@ -119,7 +142,8 @@ class Find(Resource):
         api = api or Api.Default()
 
         url = utils.join_url(cls.path, str(resource_id))
-        if params:
+        if params is not None:
+            cls._ensure_projections(params, cls.ensure_query_projections)
             url = utils.join_url_params(url, params)
 
         item = utils.convert_datetime(api.get(url))
@@ -141,6 +165,7 @@ class Find(Resource):
 
         # Force delivery of only 1 result
         params['max_results'] = 1
+        cls._ensure_projections(params, cls.ensure_query_projections)
         url = utils.join_url_params(cls.path, params)
 
         response = api.get(url)
