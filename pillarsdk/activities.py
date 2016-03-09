@@ -4,10 +4,10 @@ from .resource import Update
 from .resource import Create
 
 
-class Activity(List, Find):
+class ActivitySubscription(List, Find, Update):
     """Activities class wrapping the REST activities endpoint
     """
-    path = "activities"
+    path = "activities-subscriptions"
 
 
 class Notification(List, Find, Update):

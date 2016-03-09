@@ -7,6 +7,6 @@ from .tokens import Token
 from .groups import Group
 from .organizations import Organization
 from .projects import Project
-from .activities import Activity, Notification
+from .activities import ActivitySubscription, Notification
 from .binary_files import binaryFile
 from .exceptions import ResourceNotFound, UnauthorizedAccess, MissingConfig
