@@ -57,7 +57,7 @@ def join_url_params(url, params):
     jsonified_params = {
         key: convert_to_string(param)
         for key, param in params.items()
-    }
+        }
     return url + "?" + urlencode(jsonified_params)
 
 
@@ -104,6 +104,6 @@ def remove_none_attributes(attributes):
         return type(attributes)(remove_none_attributes(x) for x in attributes if x is not None)
     elif isinstance(attributes, dict):
         return type(attributes)((remove_none_attributes(k), remove_none_attributes(v))
-            for k, v in attributes.items() if k is not None and v is not None)
+                                for k, v in attributes.items() if k is not None and v is not None)
     else:
         return attributes
