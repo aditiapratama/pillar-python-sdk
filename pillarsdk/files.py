@@ -16,6 +16,23 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
     file_server_path = "file_storage/file"
     build_previews_server_path = "file_storage/build_previews"
 
+    @classmethod
+    def find(cls, resource_id, params=None, api=None):
+        """Adds required fields to the projection, if needed.
+
+        Only works when `params['projection']` is a dict.
+        """
+
+        try:
+            if isinstance(params['projection'], dict):
+                # These fields are required by Pillar, so they shouldn't be missing from our query.
+                params['projection'].update({'backend': 1, 'file_path': 1, 'project': 1})
+        except (TypeError, KeyError):
+            # Either params is None or params['projection'] doesn't exist.
+            pass
+
+        return super(File, cls).find(resource_id, params=params, api=api)
+
     def post_file(self, file_path, name=None, api=None):
         """Stores a file on the database or static folder.
         :param file: A file object
