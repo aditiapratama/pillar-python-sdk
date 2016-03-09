@@ -108,7 +108,7 @@ class Resource(object):
 class Find(Resource):
 
     @classmethod
-    def find(cls, resource_id, api=None):
+    def find(cls, resource_id, params=None, api=None):
         """Locate resource, usually using ObjectID
 
         Usage::
@@ -119,6 +119,9 @@ class Find(Resource):
         api = api or Api.Default()
 
         url = utils.join_url(cls.path, str(resource_id))
+        if params:
+            url = utils.join_url_params(url, params)
+
         item = utils.convert_datetime(api.get(url))
         return cls(item)
 
@@ -194,7 +197,7 @@ class List(Resource):
             for item in response['_items']:
                 item = utils.convert_datetime(item)
             return cls.list_class(response)
-        except AttributeError:
+        except AttributeError:  # FIXME: handle list responses properly, rather than relying on this exception.
             # To handle the case when response is JSON Array
             if isinstance(response, list):
                 new_resp = [cls.list_class(elem) for elem in response]

@@ -17,24 +17,6 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
     path = "nodes"
 
     @classmethod
-    def find(cls, resource_id, params=None, api=None):
-        """Locate resource, usually using ObjectID
-
-        Usage::
-
-            >>> Node.find("507f1f77bcf86cd799439011")
-        """
-
-        api = api or Api.Default()
-
-        url = utils.join_url(cls.path, str(resource_id))
-        if params:
-            url = utils.join_url_params(url, params)
-
-        item = utils.convert_datetime(api.get(url))
-        return cls(item)
-
-    @classmethod
     def find_one(cls, params, api=None):
         """Get one resource starting from parameters different than the resource
         id. TODO if more than one match for the query is found, raise exception.
