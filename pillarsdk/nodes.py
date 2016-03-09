@@ -15,6 +15,7 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
     """Node class wrapping the REST nodes endpoint
     """
     path = "nodes"
+    ensure_query_projections = {'project': 1, 'node_type': 1}
 
     @classmethod
     def find_one(cls, params, api=None):
