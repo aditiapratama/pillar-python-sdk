@@ -2,7 +2,8 @@
 .*.swp
 *.sublime-project
 *.sublime-workspace
-dist/
+/dist/
+/build/
 MANIFEST
 /.coverage
 /.cache/
