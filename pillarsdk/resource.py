@@ -262,6 +262,7 @@ class Update(Resource):
         attributes.pop('_created')
         attributes.pop('_updated')
         attributes.pop('_links', None)
+        attributes = utils.remove_none_attributes(attributes)
         url = utils.join_url(self.path, str(self['_id']))
         headers = utils.merge_dict(
             self.http_headers(),
@@ -335,6 +336,7 @@ class Post(Resource):
         """if not isinstance(attributes, Resource):
             attributes = Resource(attributes, api=self.api)"""
         #files = files or {}
+        attributes = utils.remove_none_attributes(attributes)
         new_attributes = api.post(url, attributes, {}, files)
         """if isinstance(cls, Resource):
             cls.error = None

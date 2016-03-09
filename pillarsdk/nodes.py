@@ -37,17 +37,6 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
             raise ResourceNotFound(response)
 
     def update(self, attributes=None, api=None):
-        def pop_none_attributes(attributes):
-            """Return a new dict with all None values removed"""
-            out = {}
-            for k, v in attributes.iteritems():
-                if v:
-                    if type(v) is dict:
-                        attributes[k] = pop_none_attributes(v)
-                    else:
-                        out[k] = v
-            return out
-
         api = api or self.api
         attributes = attributes or self.to_dict()
         etag = attributes['_etag']
@@ -57,10 +46,8 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
         attributes.pop('_updated')
         attributes.pop('_links', None)
         attributes.pop('allowed_methods')
-        # for attr in ['parent', 'picture']:
-        #     if attr in attributes and attributes[attr] is None:
-        #         attributes.pop(attr, None)
-        pop_none_attributes(attributes)
+        attributes = utils.remove_none_attributes(attributes)
+        print attributes
 
         url = utils.join_url(self.path, str(self['_id']))
         headers = utils.merge_dict(
