@@ -11,8 +11,10 @@ except ImportError:
 # from six:
 PY3 = sys.version_info[0] == 3
 if PY3:
+    string_type = str
     text_type = str
 else:
+    string_type = basestring
     text_type = unicode
 
 
@@ -25,7 +27,10 @@ def join_url(url, *paths):
         >>> join_url("pillar:5000", "shots")
         'pillar:5000/shots'
     """
+
+    assert isinstance(url, string_type), 'URL must be string type, not %r' % url
     for path in paths:
+        assert isinstance(path, string_type), 'Path components must be string type, not %r' % path
         url = re.sub(r'/?$', re.sub(r'^/?', '/', path), url)
     return url
 
