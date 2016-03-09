@@ -2,6 +2,8 @@ import json
 import re
 import sys
 from datetime import datetime
+from contextlib import closing
+import requests
 
 try:
     from urllib.parse import urlencode
@@ -107,3 +109,12 @@ def remove_none_attributes(attributes):
                                 for k, v in attributes.items() if k is not None and v is not None)
     else:
         return attributes
+
+
+def download_to_file(url, filename, chunk_size=10 * 1024):
+    """Downloads a file via HTTP(S) directly to the filesystem."""
+
+    with closing(requests.get(url, stream=True, verify=True)) as req, \
+            open(filename, 'wb') as outfile:
+        for block in req.iter_content(chunk_size=chunk_size):
+            outfile.write(block)

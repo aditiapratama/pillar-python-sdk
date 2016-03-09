@@ -103,3 +103,31 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
                 api=api)
             return thumbnail.link
 
+    def stream_thumb_to_file(self, directory, desired_size, api=None):
+        """Streams a thumbnail to a file.
+
+        @param directory: the directory to save the file to.
+        @param desired_size: thumbnail size
+        @return: the absolute path of the downloaded file.
+        """
+
+        api = api or self.api
+        thumb_link = self.thumbnail_file(desired_size, api=api)
+
+        if thumb_link is None:
+            raise ValueError("File {} has no thumbnail of size {}"
+                             .format(self._id, desired_size))
+
+        root, ext = os.path.splitext(self.file_path)
+        thumb_fname = "{0}-{1}.jpg".format(root, desired_size)
+
+        # thumb is now a dict like:
+        # {'content_type': 'image/jpeg', 'height': 160, 'length': 5846,
+        #  'link': 'https://storage.googleapis.com/asdlajsdhaukihuwefiuh',
+        #  'width': 160, 'size': 'b', 'file_path': '65b526639295c0dd9dc99cf54a0a606cd4924f1d-b.jpg',
+        #  'md5': '--', 'format': 'jpg'},
+
+        thumb_path = os.path.abspath(os.path.join(directory, thumb_fname))
+        utils.download_to_file(thumb_link, thumb_path)
+
+        return thumb_path
