@@ -129,7 +129,6 @@ class Api(object):
         except:
             logging.info("Response[{0}]: {1}".format(response.status_code,
                 response.reason))
-            #print (response.content)
             raise
 
         return error

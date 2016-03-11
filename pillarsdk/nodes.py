@@ -48,7 +48,6 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
         attributes.pop('_links', None)
         attributes.pop('allowed_methods')
         attributes = utils.remove_none_attributes(attributes)
-        print attributes
 
         url = utils.join_url(self.path, str(self['_id']))
         headers = utils.merge_dict(
