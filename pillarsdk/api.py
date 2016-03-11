@@ -11,13 +11,13 @@ from .config import __version__
 
 
 class Api(object):
-
     # User-Agent for HTTP request
     library_details = "requests {0}; python {1}".format(
         requests.__version__, platform.python_version())
     user_agent = "Pillar-Python-SDK/{0} ({1})".format(
         __version__, library_details)
     _api_singleton = None
+
     def __init__(self, options=None, **kwargs):
         """Create API object
 
@@ -107,8 +107,8 @@ class Api(object):
             else:
                 http_headers['Content-Type'] = "application/json"
                 return self.http_call(url, method,
-                    data=json.dumps(body),
-                    headers=http_headers)
+                                      data=json.dumps(body),
+                                      headers=http_headers)
 
         except exceptions.BadRequest as error:
             return {"error": json.loads(error.content)}
@@ -128,7 +128,7 @@ class Api(object):
                                          response.content.decode('utf-8'))
         except:
             logging.info("Response[{0}]: {1}".format(response.status_code,
-                response.reason))
+                                                     response.reason))
             raise
 
         return error
@@ -163,7 +163,7 @@ class Api(object):
             raise exceptions.ServerError(response, content)
         else:
             raise exceptions.ConnectionError(response,
-                content, "Unknown response code: #{response.code}")
+                                             content, "Unknown response code: #{response.code}")
 
     def headers(self):
         """Default HTTP headers
@@ -171,7 +171,7 @@ class Api(object):
         token = self.get_token()
 
         headers = {
-            #"Content-Type": "application/json",
+            # "Content-Type": "application/json",
             "Accept": "application/json",
             "User-Agent": self.user_agent
         }
