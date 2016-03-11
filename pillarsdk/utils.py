@@ -72,9 +72,18 @@ def merge_dict(data, *override):
         >>> md = merge_dict({"foo": "bar"}, {1: 2}, {"foo1": "bar2"})
         >>> md == {1: 2, 'foo': 'bar', 'foo1': 'bar2'}
         True
+        >>> merge_dict({'foo': 'bar'}, None)
+        {'foo': 'bar'}
+        >>> merge_dict(None, {'foo': 'bar'})
+        {'foo': 'bar'}
+        >>> merge_dict(None, None)
+        {}
     """
+
     result = {}
     for current_dict in (data,) + override:
+        if current_dict is None:
+            continue
         result.update(current_dict)
     return result
 

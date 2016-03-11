@@ -30,7 +30,7 @@ class Api(object):
                     password='PASSWORD'
                 )
         """
-        kwargs = utils.merge_dict(options or {}, kwargs)
+        kwargs = utils.merge_dict(options, kwargs)
 
         self.endpoint = kwargs["endpoint"]
         self.username = kwargs["username"]
@@ -49,7 +49,6 @@ class Api(object):
                 password=kwargs["password"] if kwargs.get("password") else None,
                 token=kwargs["token"] if kwargs.get("token") else None)
         return Api._api_singleton
-
 
     def basic_auth(self, token=None):
         """Returns base64 encoded token. Used to encode credentials
@@ -92,7 +91,7 @@ class Api(object):
         :param files: Dictionary of files to be uploaded via POST
         """
 
-        http_headers = utils.merge_dict(self.headers(), headers or {})
+        http_headers = utils.merge_dict(self.headers(), headers)
 
         if http_headers.get('Pillar-Request-Id'):
             logging.info("Pillar-Request-Id: {0}".format(http_headers['Pillar-Request-Id']))
@@ -121,7 +120,6 @@ class Api(object):
         """Makes a http call. Logs response information.
         """
         response = requests.request(method, url, **kwargs)
-
 
         try:
             error = self.handle_response(response,
@@ -186,28 +184,28 @@ class Api(object):
         """Make GET request
         """
         return self.request(utils.join_url(self.endpoint, action), 'GET',
-            headers=headers or {})
+                            headers=headers)
 
     def post(self, action, params=None, headers=None, files=None):
         """Make POST request
         """
         return self.request(utils.join_url(self.endpoint, action), 'POST',
-            body=params or {}, headers=headers or {}, files=files)
+                            body=params, headers=headers, files=files)
 
     def put(self, action, params=None, headers=None):
         """Make PUT request
         """
         return self.request(utils.join_url(self.endpoint, action), 'PUT',
-            body=params or {}, headers=headers or {})
+                            body=params, headers=headers)
 
     def patch(self, action, params=None, headers=None, files=None):
         """Make PATCH request
         """
         return self.request(utils.join_url(self.endpoint, action), 'PATCH',
-            body=params or {}, headers=headers or {}, files=files)
+                            body=params, headers=headers, files=files)
 
     def delete(self, action, headers=None):
         """Make DELETE request
         """
         return self.request(utils.join_url(self.endpoint, action), 'DELETE',
-            headers=headers or {})
+                            headers=headers)

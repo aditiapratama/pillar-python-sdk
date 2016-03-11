@@ -41,3 +41,12 @@ class PillarUtilsTests(unittest.TestCase):
         # Test unicode value in string
         self.assertEqual('url?dict=' + quote_plus(r'{"food": "\u0e1c\u0e31\u0e14\u0e44\u0e17\u0e22"}'),
                          utils.join_url_params('url', {'dict': {'food': 'ผัดไทย'}}))
+
+    def test_merge_dict(self):
+        self.assertEqual({1: 2, 'foo': 'bar', 'foo1': 'bar2'},
+                         utils.merge_dict({"foo": "bar"}, {1: 2}, {"foo1": "bar2"}))
+
+        self.assertEqual({'foo': 'bar'}, utils.merge_dict({'foo': 'bar'}, None))
+
+        self.assertEqual({'foo': 'bar'}, utils.merge_dict(None, {'foo': 'bar'}))
+        self.assertEqual({}, utils.merge_dict(None, None))
