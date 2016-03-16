@@ -101,7 +101,9 @@ def convert_datetime(item):
 
 
 def remove_none_attributes(attributes):
-    """Return a new dict with all None values removed"""
+    """Return a new dict with all None values removed
+    :param attributes: Dictionary containing all the item attributes
+    """
     # out = {}
     # for k, v in attributes.iteritems():
     #     if v is not None:
