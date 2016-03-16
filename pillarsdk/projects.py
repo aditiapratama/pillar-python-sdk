@@ -46,13 +46,12 @@ class Project(List, Find, Create, Post, Update, Delete, Replace):
         attributes.pop('_updated', None)
         attributes.pop('_links', None)
         attributes.pop('allowed_methods')
-        # Remove fields with None value (causes error on validation)
+        # Strip embedded image file properties and revert to ObjectId
         for prop in ['picture_square', 'picture_header']:
-            if prop in attributes and attributes[prop] is None:
-                attributes.pop(prop)
-            # Strip embedded image file properties and revert to ObjectId
-            elif type(attributes[prop]) is dict:
+            if prop in attributes and type(attributes[prop]) is dict:
                 attributes[prop] = attributes[prop]['_id']
+        # Remove None attributes
+        attributes = utils.remove_none_attributes(attributes)
         url = utils.join_url(self.path, str(self['_id']))
         headers = utils.merge_dict(
             self.http_headers(),
