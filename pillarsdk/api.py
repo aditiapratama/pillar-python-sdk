@@ -47,10 +47,10 @@ class Api(object):
         """
         if Api._api_singleton is None or kwargs:
             Api._api_singleton = Api(
-                endpoint=kwargs["endpoint"] if kwargs.get("endpoint") else None,
-                username=kwargs["username"] if kwargs.get("username") else None,
-                password=kwargs["password"] if kwargs.get("password") else None,
-                token=kwargs["token"] if kwargs.get("token") else None)
+                endpoint=kwargs.get("endpoint"),
+                username=kwargs.get("username"),
+                password=kwargs.get("password"),
+                token=kwargs.get("token"))
         return Api._api_singleton
 
     def basic_auth(self, token=None):
