@@ -10,6 +10,7 @@ class Resource(object):
     """Base class for all REST services
     """
     convert_resources = {}
+    ensure_query_projections = {}
 
     def __init__(self, attributes=None):
         attributes = attributes or {}
@@ -21,6 +22,28 @@ class Resource(object):
         super(Resource, self).__setattr__('header', {})
         super(Resource, self).__setattr__('request_id', None)
         self.merge(attributes)
+
+    @staticmethod
+    def _ensure_projections(params, extra_projections):
+        """Ensures that if projections are given in the params, they contain the given ones.
+
+        Only works when `params['projection']` exists and is a dict.
+
+        @param params: URL parameters
+        @type params: dict
+        @param extra_projections: extra projections to add
+        @type extra_projections: dict
+        """
+
+        if not extra_projections:
+            return
+
+        try:
+            if isinstance(params['projection'], dict):
+                params['projection'].update(extra_projections)
+        except (TypeError, KeyError):
+            # Either params is None or params['projection'] doesn't exist.
+            pass
 
     def generate_request_id(self):
         """Generate unique request id
@@ -106,29 +129,6 @@ class Resource(object):
 
 
 class Find(Resource):
-    ensure_query_projections = {}
-
-    @classmethod
-    def _ensure_projections(cls, params, extra_projections):
-        """Ensures that if projections are given in the params, they contain the given ones.
-
-        Only works when `params['projection']` exists and is a dict.
-
-        @param params: URL parameters
-        @type params: dict
-        @param extra_projections: extra projections to add
-        @type extra_projections: dict
-        """
-
-        if not extra_projections:
-            return
-
-        try:
-            if isinstance(params['projection'], dict):
-                params['projection'].update(extra_projections)
-        except (TypeError, KeyError):
-            # Either params is None or params['projection'] doesn't exist.
-            pass
 
     @classmethod
     def find(cls, resource_id, params=None, api=None):
@@ -215,6 +215,7 @@ class List(Resource):
         if params is None:
             url = cls.path
         else:
+            cls._ensure_projections(params, cls.ensure_query_projections)
             url = utils.join_url_params(cls.path, params)
 
         try:
