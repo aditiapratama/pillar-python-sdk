@@ -130,14 +130,13 @@ class Api(object):
             raise
 
         try:
-            error = self.handle_response(response,
-                                         response.content.decode('utf-8'))
+            content = self.handle_response(response, response.text)
         except:
             logging.info("Response[{0}]: {1}".format(response.status_code,
                                                      response.reason))
             raise
 
-        return error
+        return content
 
     def handle_response(self, response, content):
         """Check HTTP response codes
