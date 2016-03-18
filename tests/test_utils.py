@@ -42,6 +42,17 @@ class PillarUtilsTests(unittest.TestCase):
         self.assertEqual('url?dict=' + quote_plus(r'{"food": "\u0e1c\u0e31\u0e14\u0e44\u0e17\u0e22"}'),
                          utils.join_url_params('url', {'dict': {'food': 'ผัดไทย'}}))
 
+    def test_join_url_params_sorting(self):
+        # Different sorting than in the tests before, and using multiple keys per dict so
+        # that sorting is actually relevant.
+        self.assertEqual('url?after=haha+actually+before' +
+                         '&dict=' + quote_plus(r'{"drinks": "water", "food": "\u0e1c\u0e31\u0e14\u0e44\u0e17\u0e22"}') +
+                         '&last=yeah%2C+last',
+                         utils.join_url_params('url', {'dict': {'food': 'ผัดไทย', 'drinks': 'water'},
+                                                       'after': 'haha actually before',
+                                                       'last': 'yeah, last'}))
+
+
     def test_merge_dict(self):
         self.assertEqual({1: 2, 'foo': 'bar', 'foo1': 'bar2'},
                          utils.merge_dict({"foo": "bar"}, {1: 2}, {"foo1": "bar2"}))

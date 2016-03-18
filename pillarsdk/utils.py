@@ -51,15 +51,15 @@ def join_url_params(url, params):
 
     def convert_to_string(param):
         if isinstance(param, dict):
-            return json.dumps(param)
+            return json.dumps(param, sort_keys=True)
         if isinstance(param, text_type):
             return param.encode('utf-8')
         return param
 
-    jsonified_params = {
-        key: convert_to_string(param)
-        for key, param in params.items()
-        }
+    # Pass as (key, value) pairs, so that the sorted order is maintained.
+    jsonified_params = [
+        (key, convert_to_string(params[key]))
+        for key in sorted(params.keys())]
     return url + "?" + urlencode(jsonified_params)
 
 
