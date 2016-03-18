@@ -9,6 +9,8 @@ from . import utils
 from . import exceptions
 from .config import __version__
 
+log = logging.getLogger(__name__)
+
 
 class Api(object):
     # User-Agent for HTTP request
@@ -97,7 +99,7 @@ class Api(object):
         http_headers = utils.merge_dict(self.headers(), headers)
 
         if http_headers.get('Pillar-Request-Id'):
-            logging.info("Pillar-Request-Id: {0}".format(http_headers['Pillar-Request-Id']))
+            log.info("Pillar-Request-Id: %s", http_headers['Pillar-Request-Id'])
         try:
             # Support for Multipart-Encoded file upload
             if files and method in ['POST', 'PUT', 'PATCH']:
@@ -126,14 +128,13 @@ class Api(object):
         try:
             response = self.requests_session.request(method, url, **kwargs)
         except Exception as ex:
-            logging.warning('Error performing HTTP %s request to %s: %s', method, url, str(ex))
+            log.warning('Error performing HTTP %s request to %s: %s', method, url, str(ex))
             raise
 
         try:
             content = self.handle_response(response, response.text)
         except:
-            logging.info("Response[{0}]: {1}".format(response.status_code,
-                                                     response.reason))
+            log.info("Response[%s]: %s", response.status_code, response.reason)
             raise
 
         return content
