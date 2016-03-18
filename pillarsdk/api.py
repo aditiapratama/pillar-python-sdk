@@ -18,6 +18,9 @@ class Api(object):
         __version__, library_details)
     _api_singleton = None
 
+    # Global session object to do HTTP requests.
+    requests_session = requests.session()
+
     def __init__(self, options=None, **kwargs):
         """Create API object
 
@@ -119,7 +122,12 @@ class Api(object):
     def http_call(self, url, method, **kwargs):
         """Makes a http call. Logs response information.
         """
-        response = requests.request(method, url, **kwargs)
+
+        try:
+            response = self.requests_session.request(method, url, **kwargs)
+        except Exception as ex:
+            logging.warning('Error performing HTTP %s request to %s: %s', method, url, str(ex))
+            raise
 
         try:
             error = self.handle_response(response,
