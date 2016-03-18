@@ -12,7 +12,6 @@ from pillarsdk import utils
 
 
 class PillarUtilsTests(unittest.TestCase):
-
     def test_join_url_params(self):
         """Test that strings and dicts work as parameters."""
 
@@ -51,7 +50,6 @@ class PillarUtilsTests(unittest.TestCase):
                          utils.join_url_params('url', {'dict': {'food': 'ผัดไทย', 'drinks': 'water'},
                                                        'after': 'haha actually before',
                                                        'last': 'yeah, last'}))
-
 
     def test_merge_dict(self):
         self.assertEqual({1: 2, 'foo': 'bar', 'foo1': 'bar2'},
