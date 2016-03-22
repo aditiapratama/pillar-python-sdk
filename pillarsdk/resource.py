@@ -1,5 +1,4 @@
 import uuid
-from datetime import datetime
 
 from . import utils
 from .api import Api
