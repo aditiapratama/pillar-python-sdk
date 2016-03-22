@@ -145,3 +145,17 @@ def download_to_file(url, filename, chunk_size=10 * 1024):
             open(filename, 'wb') as outfile:
         for block in req.iter_content(chunk_size=chunk_size):
             outfile.write(block)
+
+
+def sanitize_filename(file_name):
+    """Sanitize the filename.
+
+    Returns a new filename with only filename-safe characters.
+    """
+
+    # Removes quotes and other unsafe characters.
+    # This is easier than keeping good characters and trying to be unicode-friendly.
+    badchars = set('''!#$%&*()[]{}'"/\\<>''')
+    safe_name = ''.join(c for c in file_name
+                        if ord(c) > 31 and c not in badchars)
+    return safe_name.strip(' .')

@@ -69,3 +69,11 @@ class PillarUtilsTests(unittest.TestCase):
 
         as_json = json.dumps(resource, cls=utils.PillarJSONEncoder, sort_keys=True)
         self.assertEqual('{"datetime": "2016-03-22 12:35:16"}', as_json)
+
+    def test_sanitize_filename(self):
+
+        self.assertEqual('abc.def', utils.sanitize_filename('abc.def'))
+        self.assertEqual('abc.def', utils.sanitize_filename('. . abc.def . . '))
+        self.assertEqual('abc......def', utils.sanitize_filename('././abc../..///..def'))
+        self.assertEqual('Pad Thai is ผัดไทย', utils.sanitize_filename('Pad Thai is ผัดไทย'))
+        self.assertEqual(u'Pad Thai is ผัดไทย', utils.sanitize_filename(u'Pad Thai is ผัดไทย'))
