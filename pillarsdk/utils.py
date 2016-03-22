@@ -20,6 +20,22 @@ else:
     text_type = unicode
 
 
+class PillarJSONEncoder(json.JSONEncoder):
+    """JSON encoder with support for Pillar resources."""
+
+    def default(self, obj):
+        # Late import to prevent circular references.
+        from .resource import Resource
+
+        if isinstance(obj, datetime):
+            return obj.isoformat(' ')
+        if isinstance(obj, Resource):
+            return obj.to_dict()
+
+        # Let the base class default method raise the TypeError
+        return json.JSONEncoder.default(self, obj)
+
+
 def join_url(url, *paths):
     """
     Joins individual URL strings together, and returns a single string.

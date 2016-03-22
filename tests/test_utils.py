@@ -1,5 +1,7 @@
 # -*- encoding: utf-8 -*-
 
+import datetime
+import json
 import unittest
 
 try:
@@ -9,6 +11,7 @@ except ImportError:
     from urllib import quote_plus
 
 from pillarsdk import utils
+from pillarsdk.resource import Resource
 
 
 class PillarUtilsTests(unittest.TestCase):
@@ -59,3 +62,10 @@ class PillarUtilsTests(unittest.TestCase):
 
         self.assertEqual({'foo': 'bar'}, utils.merge_dict(None, {'foo': 'bar'}))
         self.assertEqual({}, utils.merge_dict(None, None))
+
+    def test_json_encoding(self):
+        resource = Resource()
+        resource['datetime'] = datetime.datetime(2016, 3, 22, 12, 35, 16)
+
+        as_json = json.dumps(resource, cls=utils.PillarJSONEncoder, sort_keys=True)
+        self.assertEqual('{"datetime": "2016-03-22 12:35:16"}', as_json)
