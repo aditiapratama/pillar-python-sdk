@@ -19,7 +19,8 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
     path = "files"
     file_server_path = "file_storage/file"
     build_previews_server_path = "file_storage/build_previews"
-    ensure_query_projections = {'backend': 1, 'file_path': 1, 'project': 1, 'content_type': 1}
+    ensure_query_projections = {'backend': 1, 'file_path': 1, 'project': 1, 'content_type': 1,
+                                'link': 1, 'link_expires': 1}
 
     def post_file(self, file_path, name=None, api=None):
         """Stores a file on the database or static folder.
