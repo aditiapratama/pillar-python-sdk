@@ -111,7 +111,9 @@ def convert_datetime(item):
     keys = ['_updated', '_created']
 
     for k in keys:
-        item[k] = datetime.strptime(item[k], "%a, %d %b %Y %H:%M:%S %Z")
+        # Check if the key is in the document
+        if k in item:
+            item[k] = datetime.strptime(item[k], "%a, %d %b %Y %H:%M:%S %Z")
 
     return item
 
