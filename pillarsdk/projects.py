@@ -48,6 +48,7 @@ class Project(List, Find, Create, Post, Update, Delete, Replace):
         attributes.pop('_created', None)
         attributes.pop('_updated', None)
         attributes.pop('_links', None)
+        attributes.pop('_deleted', None)
         attributes.pop('allowed_methods')
         # Strip embedded image file properties and revert to ObjectId
         for prop in ['picture_square', 'picture_header']:
