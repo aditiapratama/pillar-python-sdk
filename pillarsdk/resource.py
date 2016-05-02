@@ -263,6 +263,7 @@ class Update(Resource):
         attributes.pop('_created')
         attributes.pop('_updated')
         attributes.pop('_links', None)
+        attributes.pop('_deleted', None)
         attributes = utils.remove_none_attributes(attributes)
         url = utils.join_url(self.path, str(self['_id']))
         headers = utils.merge_dict(
@@ -293,6 +294,7 @@ class Replace(Resource):
         attributes.pop('_created')
         attributes.pop('_updated')
         attributes.pop('_links', None)
+        attributes.pop('_deleted', None)
         if 'parent' in attributes:
             attributes.pop('parent')
         url = utils.join_url(self.path, str(self['_id']))

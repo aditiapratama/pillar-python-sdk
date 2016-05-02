@@ -46,6 +46,7 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
         attributes.pop('_created')
         attributes.pop('_updated')
         attributes.pop('_links', None)
+        attributes.pop('_deleted', None)
         attributes.pop('allowed_methods')
         attributes = utils.remove_none_attributes(attributes)
 
