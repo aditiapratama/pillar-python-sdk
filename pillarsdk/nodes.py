@@ -64,6 +64,18 @@ class Node(List, Find, Create, Post, Update, Delete, Replace):
             return True
         return False
 
+    @classmethod
+    def latest(cls, node_type, api=None):
+        """Get list of latestnodes."""
+
+        api = api or Api.Default()
+        url = 'latest/%s' % node_type
+
+        response = api.get(url)
+        for item in response['_items']:
+            utils.convert_datetime(item)
+        return cls.list_class(response)
+
 
 class NodeType(List, Find, Create, Post, Delete):
     """NodeType class wrapping the REST node_types endpoint
