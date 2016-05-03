@@ -17,7 +17,7 @@ setup(
     description='The Pillar REST SDK provides Python APIs to communicate to the Pillar webservices.',
     long_description=long_description,
     install_requires=['requests>=1.0.0', 'pyopenssl>=0.14'],
-    test_requires=['tox', 'coverage', 'pytest', 'pytest-xdist', 'pytest-cov'],
+    tests_require=['tox', 'coverage', 'pytest', 'pytest-xdist', 'pytest-cov'],
     classifiers=[
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
