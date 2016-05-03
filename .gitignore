@@ -8,4 +8,4 @@ MANIFEST
 /.coverage
 /.cache/
 /.tox/
-/pillar_sdk.egg-info/
+/pillarsdk.egg-info/
