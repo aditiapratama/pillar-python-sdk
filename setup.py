@@ -7,7 +7,7 @@ The Pillar REST SDK provides Python APIs to communicate to the Pillar webservice
 
 setup(
     name='pillarsdk',
-    version='0.1.1',
+    version='1.0.0',
     author=u'Francesco Siddi, Sybren A. Stüvel, PayPal',
     author_email='francesco@blender.org',
     packages=['pillarsdk'],
