@@ -60,7 +60,7 @@ class Api(object):
         for retrieving the token.
         """
         if token:
-            credentials = "{0}:".format(token)
+            credentials = "%s:%s" % (token, self.password)
         else:
             credentials = "%s:%s" % (self.username, self.password)
         return base64.b64encode(credentials.encode('utf-8')).decode('utf-8').replace("\n", "")
