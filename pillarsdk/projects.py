@@ -109,9 +109,7 @@ class Project(List, Find, Create, Post, Update, Delete, Replace):
             'user_id': str(user_id),
             'action': action}
         headers = self.http_headers()
-        response = api.post(url, payload, headers)
-        if response['_status'] != 'OK':
-            return False
+        return api.post(url, payload, headers)
 
     def add_user(self, user_id, api=None):
         """Add a user to a project given its ObjectId."""
