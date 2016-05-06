@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import glob
 from setuptools import setup
 
 long_description = """
@@ -12,6 +13,7 @@ setup(
     author_email='francesco@blender.org',
     packages=['pillarsdk'],
     scripts=[],
+    data_files=[('pillarsdk', glob.glob('*.md'))],
     url='https://github.com/armadillica/Pillar-Python-SDK',
     license='BSD License',
     description='The Pillar REST SDK provides Python APIs to communicate to the Pillar webservices.',
