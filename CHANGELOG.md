@@ -1,6 +1,12 @@
 Pillar Python SDK changelog
 ===========================
 
+Version 1.1.0, in development
+-----------------------------
+
+- Added project user management.
+
+
 Version 1.0.1, released 2016-05-06
 ----------------------------------
 
