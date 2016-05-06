@@ -82,7 +82,6 @@ class Project(List, Find, Create, Post, Update, Delete, Replace):
         return next((item for item in self.node_types if item.name \
             and item['name'] == node_type_name), None)
 
-
     def node_type_has_method(self, node_type_name, method, api=None):
         """Utility method that checks if a given node_type has the requested
         method.
@@ -94,10 +93,39 @@ class Project(List, Find, Create, Post, Update, Delete, Replace):
             'node_type': node_type_name}
         url = utils.join_url_params(url, params)
         response = api.get(url)
-        node_type = next((item for item in response['node_types'] if item['name'] \
-            and item['name'] == node_type_name), None)
+        node_type = next((item for item in response['node_types'] if
+                          item['name'] and item['name'] == node_type_name),
+                         None)
         if method in node_type['allowed_methods']:
             return True
         return False
 
+    def _manage_user(self, user_id, action, api=None):
+        """Add or remove a user to a project give its ObjectId."""
+        api = api or self.api
+        url = 'p/users'
+        payload = {
+            'project_id': str(self._id),
+            'user_id': str(user_id),
+            'action': action}
+        headers = self.http_headers()
+        response = api.post(url, payload, headers)
+        if response['_status'] != 'OK':
+            return False
 
+    def add_user(self, user_id, api=None):
+        """Add a user to a project given its ObjectId."""
+        return self._manage_user(user_id, 'add', api)
+
+    def remove_user(self, user_id, api=None):
+        """Remove a user to a project given its ObjectId."""
+        return self._manage_user(user_id, 'remove', api)
+
+    def get_users(self, api=None):
+        """Get all users that are member of the admin group for the project."""
+        api = api or self.api
+        params = {'project_id': str(self._id)}
+        url = utils.join_url_params('p/users', params)
+        headers = self.http_headers()
+        response = api.get(url, headers=headers)
+        return response
