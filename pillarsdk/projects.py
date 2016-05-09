@@ -96,9 +96,9 @@ class Project(List, Find, Create, Post, Update, Delete, Replace):
         node_type = next((item for item in response['node_types'] if
                           item['name'] and item['name'] == node_type_name),
                          None)
-        if method in node_type['allowed_methods']:
-            return True
-        return False
+        if node_type is None or 'allowed_methods' not in node_type:
+            return False
+        return method in node_type['allowed_methods']
 
     def _manage_user(self, user_id, action, api=None):
         """Add or remove a user to a project give its ObjectId."""
