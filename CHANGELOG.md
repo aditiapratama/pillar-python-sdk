@@ -5,6 +5,7 @@ Version 1.1.0, in development
 -----------------------------
 
 - Added project user management.
+- Project creation uses /p/create entry point on Pillar
 
 
 Version 1.0.1, released 2016-05-06
