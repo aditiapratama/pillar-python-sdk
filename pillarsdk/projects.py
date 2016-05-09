@@ -127,3 +127,11 @@ class Project(List, Find, Create, Post, Update, Delete, Replace):
         headers = self.http_headers()
         response = api.get(url, headers=headers)
         return response
+
+    def create(self, api=None):
+        name = self.name or 'new project'
+
+        headers = self.http_headers()
+        response = api.post('p/create', headers=headers,
+                            params={'name': name})
+        self.merge(response)
