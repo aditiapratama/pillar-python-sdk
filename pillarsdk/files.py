@@ -67,12 +67,21 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
             raise ValueError("Size should be in ({}), not {}"
                              .format(', '.join(THUMBNAIL_SIZES), size))
 
+        if self.variations:
+            thumbnail = next((item for item in self['variations']
+                              if item['size'] == size), None)
+            if thumbnail:
+                return thumbnail['link']
+
         if self.backend == 'gcs':
             thumbnail_link = self.thumbnail_file(size, api=api)
             return thumbnail_link
-        else:
+
+        if self.link:
             root, ext = os.path.splitext(self.link)
             return "{0}-{1}.jpg".format(root, size)
+
+        return None
 
     def thumbnail_file(self, size, api=None):
         """Delivers a single thumbnail (child) file for an image. Before returning
