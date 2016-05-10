@@ -66,6 +66,9 @@ class Resource(object):
     def __getattr__(self, name):
         return self.__data__.get(name)
 
+    def __contains__(self, item):
+        return item in self.__data__
+
     def __setattr__(self, name, value):
         try:
             # Handle attributes(error, header, request_id)
