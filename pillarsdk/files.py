@@ -60,7 +60,7 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
 
     def thumbnail(self, size, api=None):
         """Utility to replace a component of an image link so that it points to
-        a thumbnail, without querying the database.
+        a thumbnail.
         """
 
         if size not in THUMBNAIL_SIZES:
@@ -72,46 +72,16 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
                               if item['size'] == size), None)
             if thumbnail:
                 return thumbnail['link']
-
-        if self.backend == 'gcs':
-            thumbnail_link = self.thumbnail_file(size, api=api)
-            return thumbnail_link
 
         if self.link:
             root, ext = os.path.splitext(self.link)
             return "{0}-{1}.jpg".format(root, size)
 
-        return None
-
-    def thumbnail_file(self, size, api=None):
-        """Delivers a single thumbnail (child) file for an image. Before returning
-        we check that the parent is actually an image.
-        :param path: the size (s, b, t, m, l, h)
-
-        @returns: a link to the thumbnail, or None if there is no thumbnail
-        @rtype: str
-        """
-        api = api or self.api
-
-        if size not in THUMBNAIL_SIZES:
-            raise ValueError("Size should be in ({}), not {}"
-                             .format(', '.join(THUMBNAIL_SIZES), size))
-
-        # We check from the content_type if the file is an image
-        if self.content_type.split('/')[0] != 'image':
-            # File is not an image, so no thumbnail available
-            return None
-
-        if self.variations:
-            thumbnail = next((item for item in self['variations']
-                              if item['size'] == size), None)
-            if thumbnail:
-                return thumbnail['link']
-        else:
-            thumbnail = self.find_first(
-                {'where': {"parent": self._id, "size": size}},
-                api=api)
+        thumbnail = self.find_first({'where': {'parent': self._id, 'size': size}}, api=api)
+        if thumbnail is not None:
             return thumbnail.link
+
+        return ''
 
     def stream_thumb_to_file(self, directory, desired_size, api=None):
         """Streams a thumbnail to a file.
@@ -122,7 +92,7 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
         """
 
         api = api or self.api
-        thumb_link = self.thumbnail_file(desired_size, api=api)
+        thumb_link = self.thumbnail(desired_size, api=api)
 
         if thumb_link is None:
             raise ValueError("File {} has no thumbnail of size {}"
