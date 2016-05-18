@@ -11,6 +11,8 @@ class ConnectionError(Exception):
             message += " Response status: %s." % (self.response.status_code)
         if hasattr(self.response, 'reason'):
             message += " Response message: %s." % (self.response.reason)
+        if hasattr(self.response, 'request'):
+            message += " Request URL: %s." % self.response.request.url
         if self.content is not None:
             message += " Error message: " + str(self.content)
         return message
