@@ -199,6 +199,7 @@ class Find(Resource):
 
 class List(Resource):
 
+    # Class of the list result itself.
     list_class = Resource
 
     @classmethod
@@ -213,24 +214,36 @@ class List(Resource):
 
             >>> shots = Nodes.all({'count': 2, 'type': 'shot'})
         """
+
+        return cls.all_from_endpoint(cls.path, params=params, api=api)
+
+    @classmethod
+    def all_from_endpoint(cls, endpoint_url, params=None, api=None):
+        """Retrieves a list of resources from a custom endpoint."""
+
         api = api or Api.Default()
 
         if params is None:
-            url = cls.path
+            url = endpoint_url
         else:
             cls._ensure_projections(params, cls.ensure_query_projections)
-            url = utils.join_url_params(cls.path, params)
+            url = utils.join_url_params(endpoint_url, params)
 
-        try:
-            response = api.get(url)
-            for item in response['_items']:
-                item = utils.convert_datetime(item)
+        response = api.get(url)
+
+        if '_items' in response:
+            items = response['_items']
+            for idx, item in enumerate(items):
+                items[idx] = cls(utils.convert_datetime(item))
             return cls.list_class(response)
-        except AttributeError:  # FIXME: handle list responses properly, rather than relying on this exception.
-            # To handle the case when response is JSON Array
-            if isinstance(response, list):
-                new_resp = [cls.list_class(elem) for elem in response]
-                return new_resp
+
+        # To handle the case when response is JSON Array
+        if isinstance(response, list):
+            new_resp = [cls(elem) for elem in response]
+            return new_resp
+
+        # Fall back to just returning the response.
+        return response
 
 
 class Create(Resource):
