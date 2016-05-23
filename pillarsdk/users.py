@@ -19,3 +19,9 @@ class User(List, Find, Create, Post, Update, Delete):
         return "https://www.gravatar.com/avatar/" + \
             hashlib.md5(self.email.lower()).hexdigest() + \
             "?" + urllib.urlencode(parameters)
+
+    @classmethod
+    def me(cls, params=None, api=None):
+        """Returns info about the current user, identified by auth token."""
+
+        return cls.find_from_endpoint('/users/me', params=params, api=api)

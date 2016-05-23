@@ -141,9 +141,16 @@ class Find(Resource):
             >>> Node.find("507f1f77bcf86cd799439011")
         """
 
+        url = utils.join_url(cls.path, str(resource_id))
+        return cls.find_from_endpoint(url, params=params, api=api)
+
+    @classmethod
+    def find_from_endpoint(cls, endpoint, params=None, api=None):
+        """Locate resource from a custom endpoint."""
+
         api = api or Api.Default()
 
-        url = utils.join_url(cls.path, str(resource_id))
+        url = endpoint
         if params is not None:
             cls._ensure_projections(params, cls.ensure_query_projections)
             url = utils.join_url_params(url, params)
