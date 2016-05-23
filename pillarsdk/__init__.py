@@ -1,4 +1,5 @@
 from .api import Api
+from .resource import Resource
 from .nodes import Node
 from .nodes import NodeType
 from .users import User
