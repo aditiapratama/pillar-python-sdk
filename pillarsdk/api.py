@@ -161,6 +161,8 @@ class Api(object):
             raise exceptions.ResourceConflict(response, content)
         elif status == 410:
             raise exceptions.ResourceGone(response, content)
+        elif status == 412:
+            raise exceptions.PreconditionFailed(response, content)
         elif status == 422:
             raise exceptions.ResourceInvalid(response, content)
         elif 401 <= status <= 499:

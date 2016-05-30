@@ -78,6 +78,11 @@ class ResourceGone(ClientError):
     pass
 
 
+class PreconditionFailed(ClientError):
+    """412 Precondition Failed"""
+    pass
+
+
 class ResourceInvalid(ClientError):
     """422 Invalid
     """
