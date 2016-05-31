@@ -167,7 +167,8 @@ class Find(Resource):
             cls._ensure_projections(params, cls.ensure_query_projections)
             url = utils.join_url_params(url, params)
 
-        item = utils.convert_datetime(api.get(url))
+        item = api.get(url)
+        item = utils.convert_datetime(item)
         return cls(item)
 
     @classmethod
