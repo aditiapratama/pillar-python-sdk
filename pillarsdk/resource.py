@@ -129,6 +129,18 @@ class Resource(object):
             self[key] = val
         return self
 
+    @classmethod
+    def new(cls, dict_or_resource):
+        """None-safe constructor."""
+
+        if dict_or_resource is None:
+            return None
+
+        if isinstance(dict_or_resource, Resource):
+            dict_or_resource = dict_or_resource.to_dict()
+
+        return cls(dict_or_resource)
+
 
 class Find(Resource):
 
