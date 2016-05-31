@@ -71,7 +71,10 @@ class File(List, Find, Create, Post, Update, Delete, Replace):
             thumbnail = next((item for item in self['variations']
                               if item['size'] == size), None)
             if thumbnail:
-                return thumbnail['link']
+                try:
+                    return thumbnail['link']
+                except KeyError:
+                    return None
 
         if self.link:
             root, ext = os.path.splitext(self.link)
